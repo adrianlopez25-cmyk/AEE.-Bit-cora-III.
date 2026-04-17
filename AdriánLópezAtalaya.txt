@@ -1,0 +1,82 @@
+Aquí tienes el texto redactado de forma profesional, estructurada y con la terminología técnica precisa para un informe de seguridad o auditoría.
+
+2. Fase de Investigación: Comprendiendo el corazón del sistema
+Reto de Investigación 1: El Protocolo Syslog
+El Protocolo de Registro del Sistema (Syslog) es el estándar de mensajería utilizado por los dispositivos de red para comunicarse con un servidor de registro centralizado. Su diseño permite el monitoreo unificado de la infraestructura mediante mensajes que incluyen marcas de tiempo, niveles de gravedad, identificadores de dispositivo (direcciones IP) e información detallada del evento.
+
+Aunque es nativo en sistemas operativos como Linux, Unix y macOS, no es compatible de forma predeterminada con los servidores Windows. No obstante, es posible integrar estos últimos mediante herramientas de terceros que actúan como agentes de reenvío hacia un servidor Syslog.
+
+1. Anatomía y Clasificación de Eventos (Facility y Severity)
+Syslog clasifica cada evento mediante el cruce de dos variables fundamentales: la Facilidad y la Prioridad.
+
+A. Facilidad (Facility):
+Define el origen o el componente del sistema que genera el mensaje.
+
+kern (0): Mensajes del núcleo (kernel).
+
+auth / authpriv (4/10): Mensajes de seguridad y procesos de autorización.
+
+daemon (3): Servicios de fondo o demonios del sistema.
+
+cron (9): Tareas programadas.
+
+mail (2): Subsistema de correo electrónico.
+
+local0 - local7 (16-23): Reservados para aplicaciones de usuario y personalización.
+
+B. Prioridad (Severity):
+Determina el grado de urgencia del evento en una escala del 0 al 7.
+
+0 - Emergency: El sistema está inoperable.
+
+1 - Alert: Se requiere acción inmediata.
+
+2 - Critical: Condiciones críticas del sistema.
+
+3 - Error: Condiciones de error que requieren atención.
+
+4 - Warning: Mensajes de advertencia.
+
+5 - Notice: Eventos normales pero significativos.
+
+6 - Info: Mensajes meramente informativos.
+
+7 - Debug: Información detallada para depuración técnica.
+
+2. Riesgos de Seguridad: Acceso no privilegiado a /var/log/auth.log
+Permitir que usuarios no autorizados lean este archivo se considera una negligencia grave de seguridad por las siguientes razones:
+
+Enumeración de Usuarios: Un atacante puede identificar nombres de usuario válidos para dirigir ataques de fuerza bruta o password spraying.
+
+Mapeo de la Red: Revela direcciones IP de origen, permitiendo al atacante identificar qué máquinas críticas interactúan con el servidor.
+
+Log Poisoning y Manipulación: Si además existieran permisos de escritura, el atacante podría borrar sus huellas (evidencia de sudo o logins) para evitar ser detectado.
+
+Reconocimiento Táctico: Proporciona "retroalimentación" al atacante, permitiéndole verificar si sus intentos de intrusión están teniendo éxito sin alertar al sistema mediante privilegios de root.
+
+3. Diferenciación de Intentos de Conexión
+La clave para distinguir el origen de un fallo reside en el proceso registrado y los metadatos de red:
+
+Intento Remoto (SSH): El mensaje es generado por el proceso sshd. Incluye la dirección IP externa, el puerto de origen y el método de autenticación.
+
+Ejemplo: Failed password for pedro23 from 235.80.90.188 port 4586 ssh2
+
+Fallo Local (Consola/Físico): No existe una IP de red. El log identifica una terminal física o virtual (TTY o console), lo que indica presencia frente al equipo.
+
+Ejemplo: login[12345]: FAILED LOGIN (1) on '/dev/tty1' FOR 'root'
+
+Reto de Investigación 2: Gestión Centralizada de Logs
+La Gestión Centralizada de Logs es una práctica empresarial crítica que consiste en recopilar, analizar y proteger los registros de toda la infraestructura (servidores, firewalls, bases de datos) en una plataforma única y segura. En España, bajo normativas como el RGPD o el Esquema Nacional de Seguridad (ENS), esto ha pasado de ser una recomendación técnica a un requisito de cumplimiento legal.
+
+Ventajas de la Custodia en un Servidor Externo
+El almacenamiento de logs en un servidor externo seguro ofrece beneficios vitales frente al almacenamiento local:
+
+Preservación de la Evidencia: En un ataque exitoso, lo primero que intenta un intruso es borrar los logs locales. Si estos se envían en tiempo real a un servidor externo, la evidencia queda fuera de su alcance.
+
+Integridad de Datos: Garantiza que los registros no han sido alterados (tampering), lo cual es fundamental para una investigación forense.
+
+Continuidad Operativa: Permite realizar diagnósticos incluso si la máquina original sufre un fallo de hardware total y queda inaccesible.
+
+Visibilidad Global: Facilita la correlación de eventos (detectar si un ataque está ocurriendo en varios servidores a la vez).
+
+
