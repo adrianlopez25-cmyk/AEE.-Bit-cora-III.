@@ -1,5 +1,3 @@
-Aquí tienes el texto redactado de forma profesional, estructurada y con la terminología técnica precisa para un informe de seguridad o auditoría.
-
 2. Fase de Investigación: Comprendiendo el corazón del sistema
 Reto de Investigación 1: El Protocolo Syslog
 El Protocolo de Registro del Sistema (Syslog) es el estándar de mensajería utilizado por los dispositivos de red para comunicarse con un servidor de registro centralizado. Su diseño permite el monitoreo unificado de la infraestructura mediante mensajes que incluyen marcas de tiempo, niveles de gravedad, identificadores de dispositivo (direcciones IP) e información detallada del evento.
